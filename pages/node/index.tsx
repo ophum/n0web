@@ -9,50 +9,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
 import Layout from '../../components/Layout';
+import { INode, INodes } from '../../interfaces/node';
 
-interface IAnnotation {
-	[key: string]: string,
-}
-
-interface IVirtualMachine {
-	annotations: IAnnotation[],
-	request_cpu_milli_cores: number,
-	limit_cpu_milli_cores: number,
-	request_memory_bytes: string,
-	limit_memory_bytes: string,
-}
-
-interface IReservedComputes {
-	[key: string]: IVirtualMachine,
-}
-
-interface IBlockStorage {
-	annotations: IAnnotation[],
-	request_bytes: string,
-	limit_bytes: string,
-}
-
-interface IReservedStorages {
-	[key: string]: IBlockStorage,
-}
-
-interface INode {
-	name: string,
-	address: string,
-	serial: string,
-	cpu_milli_cores: number,
-	memory_bytes: string,
-	storage_bytes: string,
-	unit: number,
-	state: string,
-	annotations: IAnnotation,
-	reserved_computes: IReservedComputes,
-	reserved_storages: IReservedStorages,
-}
-
-interface INodes {
-	nodes: INode[]
-}
 //interface IState {
 //	networks: INetwork[],
 //}

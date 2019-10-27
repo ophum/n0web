@@ -10,31 +10,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
 import Layout from '../../components/Layout';
+import { INetwork, INetworks } from '../../interfaces/network';
 
-interface IAnnotation {
-	[key: string]: string,
-}
-
-interface IVirtualMachine {
-	annotations: IAnnotation[],
-	hardware_address: string,
-}
-
-interface IReservedNetworkInterface {
-	[key: string]: IVirtualMachine,
-}
-
-interface INetwork {
-	name: string,
-	state: string,
-	ipv4_cidr: string,
-	annotations: IAnnotation,
-	reserved_network_interfaces: IReservedNetworkInterface,
-}
-
-interface INetworks {
-	networks: INetwork[]
-}
 //interface IState {
 //	networks: INetwork[],
 //}
