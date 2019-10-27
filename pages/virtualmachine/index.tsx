@@ -11,7 +11,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
 import Layout from '../../components/Layout';
-import { IVirtualMachine, IVirtualMachines } from '../../interfaces/virtualmachine';
+import { INic, IVirtualMachine, IVirtualMachines } from '../../interfaces/virtualmachine';
 
 //interface IState {
 //	networks: INetwork[],
