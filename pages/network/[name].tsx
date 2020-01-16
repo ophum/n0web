@@ -8,6 +8,7 @@ import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 
 import Layout from '../../components/Layout';
 import { INetwork } from '../../interfaces/network';
+import { apiBaseURL } from '../../lib/config';
 
 const useFetch = (url: string) => {
 	const [data, updateData] = React.useState<INetwork[]>([]);
@@ -29,7 +30,7 @@ const useFetch = (url: string) => {
 export default function Name() {
 	const router = useRouter();
 	const {name} = router.query;
-	const net: INetwork[] = useFetch('http://172.16.14.10:8082/api/v0/network/' + name);
+	const net: INetwork[] = useFetch(apiBaseURL + '/api/v0/network/' + name);
 	console.log(net);
 	return (
 		<Layout title={"n0web" + name }>
