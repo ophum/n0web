@@ -10,6 +10,7 @@ import TableRow from '@material-ui/core/TableRow';
 
 import Layout from '../../components/Layout';
 import { INode, INodes } from '../../interfaces/node';
+import { apiBaseURL } from '../../lib/config';
 
 //interface IState {
 //	networks: INetwork[],
@@ -32,7 +33,7 @@ const useFetch = (url: string) => {
 };
 
 export default function Index() {
-	const nodes = useFetch("http://172.16.14.10:8082/api/v0/node");	
+	const nodes = useFetch(apiBaseURL + "/api/v0/node");	
 	console.log(nodes);
 	return (
 		<Layout title="n0web node">

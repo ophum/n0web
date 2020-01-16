@@ -12,6 +12,7 @@ import TableRow from '@material-ui/core/TableRow';
 
 import Layout from '../../components/Layout';
 import { INic, IVirtualMachine, IVirtualMachines } from '../../interfaces/virtualmachine';
+import { apiBaseURL } from '../../lib/config';
 
 //interface IState {
 //	networks: INetwork[],
@@ -34,7 +35,7 @@ const useFetch = (url: string) => {
 };
 
 export default function Index() {
-	const vms = useFetch("http://172.16.14.10:8082/api/v0/virtual_machine");	
+	const vms = useFetch(apiBaseURL + "/api/v0/virtual_machine");	
 	console.log(vms);
 	return (
 		<Layout title="n0web virtual_machine">
@@ -51,7 +52,15 @@ export default function Index() {
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{vms.map((vm: IVirtualMachine) => (
+					{vms.sort((a: IVirtualMachine, b: IVirtualMachine) => {
+						const key = 'n0core/provisioning/virtual_machine/request_node_name';
+						if(a.annotations[key] > b.annotations[key]) {
+							return 1;
+						}else if(a.annotations[key] < b.annotations[key]) {
+							return -1;
+						}
+						return 0;
+					}).map((vm: IVirtualMachine) => (
 						<TableRow>
 							<TableCell><Link href="">{vm.name}</Link></TableCell>
 							<TableCell>{vm.compute_name}</TableCell>

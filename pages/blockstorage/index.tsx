@@ -10,6 +10,7 @@ import TableRow from '@material-ui/core/TableRow';
 
 import Layout from '../../components/Layout';
 import { IBlockStorage, IBlockStorages } from '../../interfaces/blockstorage';
+import { apiBaseURL } from '../../lib/config';
 
 //interface IState {
 //	networks: INetwork[],
@@ -32,7 +33,7 @@ const useFetch = (url: string) => {
 };
 
 export default function Index() {
-	const bss = useFetch("http://172.16.14.10:8082/api/v0/block_storage");	
+	const bss = useFetch(apiBaseURL + "/api/v0/block_storage");	
 	console.log(bss);
 	return (
 		<Layout title="n0web block_storage">
@@ -47,7 +48,15 @@ export default function Index() {
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{bss.map((bs: IBlockStorage) => (
+					{bss.sort((a: IBlockStorage, b: IBlockStorage) => {
+						const key = 'n0core/provisioning/block_storage/request_node_name';
+						if(a.annotations[key] > b.annotations[key]) {
+							return 1;
+						}else if(a.annotations[key] < b.annotations[key]) {
+							return -1;
+						}
+						return 0;
+					}).map((bs: IBlockStorage) => (
 						<TableRow>
 							<TableCell><Link href="">{bs.name}</Link></TableCell>
 							<TableCell>{bs.storage_name}</TableCell>
