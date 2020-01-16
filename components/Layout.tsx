@@ -72,7 +72,7 @@ export default function Layout(props: IProps) {
 			<Divider />
 			<List>
 				{['Network', 'BlockStorage', 'VirtualMachine', 'Node'].map((text) => (
-					<Link href={text.toLowerCase()}>
+					<Link href={"/" + text.toLowerCase()}>
 						<ListItem button key={text}>
 							<ListItemText primary={text} />
 						</ListItem>

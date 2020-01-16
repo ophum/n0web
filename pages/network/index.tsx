@@ -1,8 +1,8 @@
 import axios from 'axios';
+import Link from 'next/link';
 import * as React from 'react';
 
 import Button from '@material-ui/core/Button';
-import Link from '@material-ui/core/Link';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -11,6 +11,7 @@ import TableRow from '@material-ui/core/TableRow';
 
 import Layout from '../../components/Layout';
 import { INetwork, INetworks } from '../../interfaces/network';
+import { apiBaseURL } from '../../lib/config';
 
 //interface IState {
 //	networks: INetwork[],
@@ -22,18 +23,18 @@ const useFetch = (url: string) => {
   // empty array as second argument equivalent to componentDidMount
   React.useEffect(() => {
     async function fetchData() {
-      const response = await axios.get(url);
+			const response = await axios.get(url);
+			//console.log(response.data.networks[0].annotations['n0core/provisioning/virtual_machine/vlan_id']);
       const data: INetworks = response.data;
       updateData(data.networks);
     }
     fetchData();
-  }, [url]);
-	console.log(data);
+	}, [url]);
   return data;
 };
 
 export default function Index() {
-	const networks = useFetch("http://172.16.14.10:8082/api/v0/network");	
+	const networks: INetwork[] = useFetch(apiBaseURL + "/api/v0/network");	
 	console.log(networks);
 	return (
 		<Layout title="n0web network">
@@ -49,9 +50,19 @@ export default function Index() {
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{networks.map((net: INetwork) => (
-						<TableRow>
-							<TableCell><Link href="">{net.name}</Link></TableCell>
+					{networks.sort((a: INetwork, b: INetwork) => {
+						const key = 'n0core/provisioning/virtual_machine/vlan_id';
+						if(a.annotations && b.annotations) {
+							return Number(a.annotations[key]) - Number(b.annotations[key]);
+						}
+						return 0;
+					}).map((net: INetwork) => (
+						<TableRow key={net.name}>
+							<TableCell>
+								<Link as={"/network/" + net.name} href="/network/[name]">
+									{net.name}
+								</Link>
+							</TableCell>
 							<TableCell>{net.ipv4_cidr}</TableCell>
 							<TableCell></TableCell>
 							<TableCell>{net.annotations['n0core/provisioning/virtual_machine/vlan_id']}</TableCell>
