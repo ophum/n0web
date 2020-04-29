@@ -1,0 +1,9 @@
+[submodule "src/n0stack"]
+	path = src/vender/n0stack
+	url = https://github.com/n0stack/n0stack
+[submodule "src/vender/protobuf"]
+	path = src/vender/protobuf
+	url = https://github.com/protocolbuffers/protobuf
+[submodule "src/vender/grpc-gateway"]
+	path = src/vender/grpc-gateway
+	url = https://github.com/grpc-ecosystem/grpc-gateway
