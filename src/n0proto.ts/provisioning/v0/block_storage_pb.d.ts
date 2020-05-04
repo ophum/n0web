@@ -1,8 +1,8 @@
 import * as jspb from "google-protobuf"
 
-import * as google_api_annotations_pb from './google/api/annotations_pb';
+//import * as google_api_annotations_pb from './google/api/annotations_pb';
 import * as google_protobuf_empty_pb from 'google-protobuf/google/protobuf/empty_pb';
-import * as protoc$gen$swagger_options_annotations_pb from './protoc-gen-swagger/options/annotations_pb';
+//import * as protoc$gen$swagger_options_annotations_pb from './protoc-gen-swagger/options/annotations_pb';
 
 export class BlockStorage extends jspb.Message {
   getName(): string;
@@ -49,7 +49,7 @@ export namespace BlockStorage {
     storageName: string,
   }
 
-  export enum BlockStorageState { 
+  export enum BlockStorageState {
     BLOCK_STORAGE_UNSPECIFIED = 0,
     PENDING = 1,
     AVAILABLE = 2,
@@ -418,4 +418,3 @@ export namespace DownloadBlockStorageResponse {
     downloadUrl: string,
   }
 }
-

@@ -6,10 +6,12 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import Paper from '@material-ui/core/Paper'
 
-import {ListVirtualMachinesRequest, VirtualMachine} from '../n0proto.ts/provisioning/v0/virtual_machine_pb';
-import {VirtualMachineServiceClient} from '../n0proto.ts/provisioning/v0/Virtual_machineServiceClientPb';
+import {ListBlockStoragesRequest, BlockStorage} from '../n0proto.ts/provisioning/v0/block_storage_pb';
+import {BlockStorageServiceClient} from '../n0proto.ts/provisioning/v0/Block_storageServiceClientPb';
+
+
 
 const useStyles = makeStyles({
   table: {
@@ -17,27 +19,25 @@ const useStyles = makeStyles({
   },
 });
 
-interface VirtualMachineListProps {
+interface BlockStorageListProps {
 
 }
 
-export function VirtualMachineList(_: VirtualMachineListProps) {
+export function BlockStorageList(_: BlockStorageListProps) {
     const classes = useStyles();
     const [isReload, setIsReload] = useState(0);
-    const [vmList, setVMList] = useState([] as VirtualMachine[])
+    const [bsList, setBSList] = useState([] as BlockStorage[])
     useEffect(() => reload(), [isReload])
     const reload = () => {
-        const request = new ListVirtualMachinesRequest();
-        const client = new VirtualMachineServiceClient("http://localhost:8080", {});
-        client.listVirtualMachines(request, {}, (err, res) => {
+        const request = new ListBlockStoragesRequest();
+        const client = new BlockStorageServiceClient("http://localhost:8080", {});
+        client.listBlockStorages(request, {}, (err, res) => {
             if(err || res === null) {
                 throw err;
             }
-            const vms: VirtualMachine[] = res.getVirtualMachinesList()
-            vms[1].clearSshAuthorizedKeysList()
-            console.log(vms);
-            setVMList([
-                ...vms
+            const bss: BlockStorage[] = res.getBlockStoragesList()
+            setBSList([
+                ...bss
             ]);
         });
     }
@@ -48,18 +48,18 @@ export function VirtualMachineList(_: VirtualMachineListProps) {
                 <TableHead>
                     <TableRow>
                         <TableCell>Name</TableCell>
-                        <TableCell align="right">vcpus</TableCell>
-                        <TableCell align="right">memory</TableCell>
+                        <TableCell align="right">State</TableCell>
+                        <TableCell align="right">Size</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                {vmList.map((vm) => (
-                    <TableRow key={vm.getName()}>
+                {bsList.map((bs) => (
+                    <TableRow key={bs.getName()}>
                         <TableCell component="th" scope="row">
-                            {vm.getName()}
+                            {bs.getName()}
                         </TableCell>
-                        <TableCell align="right">{vm.getLimitCpuMilliCore() / 1000}</TableCell>
-                        <TableCell align="right">{vm.getLimitMemoryBytes() / 1024 / 1024}MB</TableCell>
+                            <TableCell align="right">{bs.getState()}</TableCell>
+                            <TableCell align="right">{bs.getLimitBytes() / 1024 / 1024 / 1024}GB</TableCell>
                     </TableRow>
                 ))}
                 </TableBody>

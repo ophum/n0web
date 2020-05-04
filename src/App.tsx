@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route, Link, Switch} from 'react-router-dom';
 import { Home } from './pages/Home';
 import {NetworkList} from './pages/NetworkList';
+import {BlockStorageList} from './pages/BlockStorageList';
 import {VirtualMachineList} from './pages/VirtualMachineList';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -76,10 +77,12 @@ const App = () => {
             </div>
           </Drawer>
           <main className={classes.content}>
+            <Toolbar />
             <Switch>
-            <Route exact path="/" children={Home} />
-            <Route exact path="/networks" children={NetworkList} />
-            <Route exact path="/virtualmachines" children={VirtualMachineList} />
+            <Route exact path="/" children={<Home />} />
+            <Route exact path="/networks" children={<NetworkList />} />
+            <Route exact path="/blockstorages" children={<BlockStorageList />} />
+            <Route exact path="/virtualmachines" children={<VirtualMachineList />} />
             </Switch>
           </main>
       </div>
