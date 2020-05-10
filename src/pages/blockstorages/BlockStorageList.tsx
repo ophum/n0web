@@ -8,8 +8,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper'
 
-import {ListBlockStoragesRequest, BlockStorage} from '../n0proto.ts/provisioning/v0/block_storage_pb';
-import {BlockStorageServiceClient} from '../n0proto.ts/provisioning/v0/Block_storageServiceClientPb';
+import {ListBlockStoragesRequest, BlockStorage} from '../../n0proto.ts/provisioning/v0/block_storage_pb';
+import {BlockStorageServiceClient} from '../../n0proto.ts/provisioning/v0/Block_storageServiceClientPb';
 
 
 

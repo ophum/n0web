@@ -13,11 +13,11 @@ var jspb = require('google-protobuf');
 var goog = jspb;
 var global = Function('return this')();
 
-var google_api_annotations_pb = require('./google/api/annotations_pb.js');
-var google_protobuf_empty_pb = require('google-protobuf/google/protobuf/empty_pb.js');
+//var google_api_annotations_pb = require('./google/api/annotations_pb.js');
+//var google_protobuf_empty_pb = require('google-protobuf/google/protobuf/empty_pb.js');
 var google_protobuf_timestamp_pb = require('google-protobuf/google/protobuf/timestamp_pb.js');
-var n0stack_provisioning_v0_block_storage_pb = require('./n0stack/provisioning/v0/block_storage_pb.js');
-var protoc$gen$swagger_options_annotations_pb = require('./protoc-gen-swagger/options/annotations_pb.js');
+//var n0stack_provisioning_v0_block_storage_pb = require('./n0stack/provisioning/v0/block_storage_pb.js');
+//var protoc$gen$swagger_options_annotations_pb = require('./protoc-gen-swagger/options/annotations_pb.js');
 goog.exportSymbol('proto.n0stack.deployment.v0.ApplyImageRequest', null, global);
 goog.exportSymbol('proto.n0stack.deployment.v0.DeleteImageRequest', null, global);
 goog.exportSymbol('proto.n0stack.deployment.v0.GenerateBlockStorageRequest', null, global);

@@ -11,8 +11,8 @@ import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 
-import {ListNetworksRequest, Network} from '../n0proto.ts/pool/v0/network_pb';
-import {NetworkServiceClient} from '../n0proto.ts/pool/v0/NetworkServiceClientPb';
+import {ListNetworksRequest, Network} from '../../n0proto.ts/pool/v0/network_pb';
+import {NetworkServiceClient} from '../../n0proto.ts/pool/v0/NetworkServiceClientPb';
 import { useHistory } from 'react-router-dom';
 
 

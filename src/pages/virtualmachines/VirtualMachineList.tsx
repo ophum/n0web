@@ -8,8 +8,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
-import {ListVirtualMachinesRequest, VirtualMachine} from '../n0proto.ts/provisioning/v0/virtual_machine_pb';
-import {VirtualMachineServiceClient} from '../n0proto.ts/provisioning/v0/Virtual_machineServiceClientPb';
+import {ListVirtualMachinesRequest, VirtualMachine} from '../../n0proto.ts/provisioning/v0/virtual_machine_pb';
+import {VirtualMachineServiceClient} from '../../n0proto.ts/provisioning/v0/Virtual_machineServiceClientPb';
 
 const useStyles = makeStyles({
   table: {

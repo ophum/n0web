@@ -6,8 +6,8 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 
-import {ApplyNetworkRequest, Network} from '../n0proto.ts/pool/v0/network_pb';
-import {NetworkServiceClient} from '../n0proto.ts/pool/v0/NetworkServiceClientPb';
+import {ApplyNetworkRequest, Network} from '../../n0proto.ts/pool/v0/network_pb';
+import {NetworkServiceClient} from '../../n0proto.ts/pool/v0/NetworkServiceClientPb';
 
 
 

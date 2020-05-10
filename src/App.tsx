@@ -1,11 +1,12 @@
 import React from 'react';
 import { BrowserRouter, Route, Link, Switch} from 'react-router-dom';
 import { Home } from './pages/Home';
-import {NetworkList} from './pages/NetworkList';
-import {ApplyNetwork} from './pages/ApplyNetwork';
-import {GetNetwork} from './pages/GetNetwork';
-import {BlockStorageList} from './pages/BlockStorageList';
-import {VirtualMachineList} from './pages/VirtualMachineList';
+import {NetworkList} from './pages/networks/NetworkList';
+import {ApplyNetwork} from './pages/networks/ApplyNetwork';
+import {GetNetwork} from './pages/networks/GetNetwork';
+import {BlockStorageList} from './pages/blockstorages/BlockStorageList';
+import {VirtualMachineList} from './pages/virtualmachines/VirtualMachineList';
+import {CreateVirtualMachine} from './pages/virtualmachines/CreateVirtualMachine';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -87,6 +88,7 @@ const App = () => {
             <Route exact path="/networks/get/:name" children={<GetNetwork />} />
             <Route exact path="/blockstorages" children={<BlockStorageList />} />
             <Route exact path="/virtualmachines" children={<VirtualMachineList />} />
+            <Route exact path="/virtualmachines/create" children={<CreateVirtualMachine />} />
             </Switch>
           </main>
       </div>
