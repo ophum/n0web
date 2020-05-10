@@ -2,6 +2,8 @@ import React from 'react';
 import { BrowserRouter, Route, Link, Switch} from 'react-router-dom';
 import { Home } from './pages/Home';
 import {NetworkList} from './pages/NetworkList';
+import {ApplyNetwork} from './pages/ApplyNetwork';
+import {GetNetwork} from './pages/GetNetwork';
 import {BlockStorageList} from './pages/BlockStorageList';
 import {VirtualMachineList} from './pages/VirtualMachineList';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
@@ -66,7 +68,7 @@ const App = () => {
             <Toolbar />
             <div className={classes.drawerContainer}>
               <List>
-                {['/', 'networks', 'blockstorages', 'virtualmachines'].map((text, index) => (
+                {['/', '/networks', '/blockstorages', '/virtualmachines'].map((text, index) => (
                   <Link to={text} className={classes.sideMenuLink}>
                     <ListItem button key={index}>
                       <ListItemText primary={text} />
@@ -81,6 +83,8 @@ const App = () => {
             <Switch>
             <Route exact path="/" children={<Home />} />
             <Route exact path="/networks" children={<NetworkList />} />
+            <Route exact path="/networks/apply" children={<ApplyNetwork />} />
+            <Route exact path="/networks/get/:name" children={<GetNetwork />} />
             <Route exact path="/blockstorages" children={<BlockStorageList />} />
             <Route exact path="/virtualmachines" children={<VirtualMachineList />} />
             </Switch>
