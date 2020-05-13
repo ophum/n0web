@@ -6,11 +6,18 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import {
+    Radio,
+    RadioGroup,
+    FormControlLabel,
+} from '@material-ui/core';
 
+import {ListNodesRequest, Node} from '../../n0proto.ts/pool/v0/node_pb';
+import {NodeServiceClient} from '../../n0proto.ts/pool/v0/NodeServiceClientPb';
 import {ListNetworksRequest, Network} from '../../n0proto.ts/pool/v0/network_pb';
 import {NetworkServiceClient} from '../../n0proto.ts/pool/v0/NetworkServiceClientPb';
 import {ListBlockStoragesRequest, BlockStorage} from '../../n0proto.ts/provisioning/v0/block_storage_pb';
-import {GenerateBlockStorageRequest} from '../../n0proto.ts/deployment/v0/image_pb';
+import {GenerateBlockStorageRequest, ListImagesRequest, Image} from '../../n0proto.ts/deployment/v0/image_pb';
 import {ImageServiceClient} from '../../n0proto.ts/deployment/v0/ImageServiceClientPb';
 import {CreateVirtualMachineRequest, VirtualMachine, VirtualMachineNIC} from '../../n0proto.ts/provisioning/v0/virtual_machine_pb';
 import {VirtualMachineServiceClient} from '../../n0proto.ts/provisioning/v0/Virtual_machineServiceClientPb';
@@ -44,6 +51,21 @@ const useStyles = makeStyles({
       marginTop: '10px',
   },
 });
+
+interface SelectBlockStorage {
+    name: string;
+    type: SelectBlockStorageType;
+    requestBytes: number;
+    limitBytes: number;
+    imageName: string;
+    imageTag: string;
+}
+
+enum SelectBlockStorageType {
+    FromImage = "fromImage",
+    Existing = "existing",
+    Empty = "empty",
+}
 
 interface CreateVirtualMachineProps{
 
@@ -96,7 +118,43 @@ export function CreateVirtualMachine(_: CreateVirtualMachineProps) {
             })
             setBlockStorageMap(maps);
         })
+    }, []);
+
+    const [imageList, setImageList] = useState([] as Image[]);
+    useEffect(() => {
+        const request  = new ListImagesRequest;
+        const client = new ImageServiceClient("http://localhost:8080", {});
+        client.listImages(request, null, (err, res) => {
+            if (err || res === null) {
+                console.log(err)
+                throw err;
+            }
+            setImageList(res.clone().getImagesList());
+        })
+    }, []);
+
+    const [nodeList, setNodeList] = useState([] as Node[]);
+    useEffect(() => {
+        const request = new ListNodesRequest();
+        const client = new NodeServiceClient("http://localhost:8080", {});
+        client.listNodes(request, null, (err, res) => {
+            if (err || res === null) {
+                console.log(err)
+                throw err;
+            }
+            const nodeList = res.clone().getNodesList();
+            setNodeList(nodeList);
+
+            if (nodeList.length > 0) {
+                setSelectedNodeName(nodeList[0].getName());
+            }
+        })
     }, [])
+
+    const [selectedNodeName, setSelectedNodeName] = useState("");
+    const onChangeSelectedNodeName = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedNodeName(e.target.value);
+    }
 
     const [selectedNetworkIndex, setSelectedNetworkIndex] = useState(0);
     const [vm, setVM] = useState(new VirtualMachine())
@@ -138,16 +196,69 @@ export function CreateVirtualMachine(_: CreateVirtualMachineProps) {
         setVM(newVM);
     };
 
-    const [newBlockStoragesFromImage, setNewBlockStoragesFromImage] = useState([] as GenerateBlockStorageRequest[]);
+    const [newBlockStorages, setNewBlockStorages] = useState([] as SelectBlockStorage[]);
     const onClickAddBS = () => {
-        const newBS = new GenerateBlockStorageRequest();
-        setNewBlockStoragesFromImage([
-            ...newBlockStoragesFromImage,
+        const imageName = imageList.length > 0 ? imageList[0].getName() : "";
+        const imageTag = imageList.length > 0 ? imageList[0].getTagsMap().toArray()[0][0] : "";
+        const newBS = {
+            name: "",
+            type: SelectBlockStorageType.FromImage,
+            imageName: imageName,
+            imageTag: imageTag
+        } as SelectBlockStorage;
+        setNewBlockStorages([
+            ...newBlockStorages,
             newBS
         ])
     }
-    const onClickApplyNetwork = () => {
+
+    const onClickCreateVirtualMachine = () => {
         console.log(vm);
+        console.log(newBlockStorages);
+
+        vm.setBlockStorageNamesList(newBlockStorages.map((s) => {
+            return s.name
+        }))
+
+        // create blockstorage
+        newBlockStorages.forEach((s) => {
+            if (s.type === SelectBlockStorageType.FromImage) {
+                const generateBlockStorageRequest = new GenerateBlockStorageRequest();
+                generateBlockStorageRequest.setBlockStorageName(s.name);
+                generateBlockStorageRequest.setImageName(s.imageName);
+                generateBlockStorageRequest.setTag(s.imageTag);
+                generateBlockStorageRequest.setRequestBytes(s.requestBytes);
+                generateBlockStorageRequest.setLimitBytes(s.limitBytes);
+                generateBlockStorageRequest.getAnnotationsMap().set("n0core/provisioning/block_storage/request_node_name", selectedNodeName);
+                console.log(generateBlockStorageRequest.getAnnotationsMap());
+                const client = new ImageServiceClient("http://localhost:8080", {});
+                client.generateBlockStorage(generateBlockStorageRequest, null, (err, res) => {
+                    console.log(err);
+                    throw err;
+                })
+            }
+        })
+
+        const request = new CreateVirtualMachineRequest();
+        request.setName(vm.getName());
+        request.setRequestCpuMilliCore(vm.getRequestCpuMilliCore());
+        request.setLimitCpuMilliCore(vm.getLimitCpuMilliCore());
+        request.setRequestMemoryBytes(vm.getRequestMemoryBytes());
+        request.setLimitMemoryBytes(vm.getLimitMemoryBytes());
+        request.setNicsList(vm.getNicsList());
+        request.setBlockStorageNamesList(vm.getBlockStorageNamesList());
+        request.getAnnotationsMap().set("n0core/provisioning/virtual_machine/request_node_name", selectedNodeName);
+
+        const client = new VirtualMachineServiceClient("http://localhost:8080", {});
+        client.createVirtualMachine(request, null, (err, res) => {
+            if (err || res === null) {
+                console.log(err);
+                throw err;
+            }
+
+            history.push("/virtualmachines");
+        })
+
 //        const request = new ApplyNetworkRequest();
 //        const client = new NetworkServiceClient("http://localhost:8080", {});
 //        client.applyNetwork(request, null, (err, res) => {
@@ -165,6 +276,16 @@ export function CreateVirtualMachine(_: CreateVirtualMachineProps) {
                 variant="h4">
                     Create VirtualMachine
             </Typography>
+            <div>
+                <Typography variant="subtitle2">Node</Typography>
+                <NativeSelect
+                    value={selectedNodeName}
+                    onChange={onChangeSelectedNodeName}>
+                        {nodeList.map((n, key) => (
+                            <option key={key} value={n.getName()}>{n.getName()}</option>
+                        ))}
+                    </NativeSelect>
+            </div>
             <div>
                 <TextField
                     label="Name"
@@ -288,7 +409,7 @@ export function CreateVirtualMachine(_: CreateVirtualMachineProps) {
                     </Button>*/}
 
                 <Typography variant="h6" className={classes.title}>
-                    Create BlockStorage
+                    BlockStorages
                 </Typography>
                 <Button
                     variant="contained"
@@ -296,47 +417,133 @@ export function CreateVirtualMachine(_: CreateVirtualMachineProps) {
                     onClick={onClickAddBS}>
                         Add
                 </Button>
-                {newBlockStoragesFromImage.map((bs, key) => {
+                {newBlockStorages.map((bs, key) => {
+                    const onChangeBSType = (e: React.ChangeEvent<HTMLInputElement>) => {
+                        const newBSS = [...newBlockStorages];
+                        newBSS[key].type = e.target.value as SelectBlockStorageType
+                        setNewBlockStorages(newBSS);
+                    }
                     const onChangeBSName = (e: React.ChangeEvent<HTMLInputElement>) => {
-                        const newBSS = [...newBlockStoragesFromImage];
-                        newBSS[key].setBlockStorageName(e.target.value);
-                        setNewBlockStoragesFromImage(newBSS);
+                        const newBSS = [...newBlockStorages];
+                        newBSS[key].name = e.target.value;
+                        setNewBlockStorages(newBSS);
                     }
                     const onDelete = () => {
-                        const newBSs = [...newBlockStoragesFromImage.filter((_, i) => i !== key)];
-                        setNewBlockStoragesFromImage(newBSs);
+                        const newBSs = [...newBlockStorages.filter((_, i) => i !== key)];
+                        setNewBlockStorages(newBSs);
+                    }
+                    const onSwapUp = () => {
+                        if (key == 0) return;
+                        const newBSS = [...newBlockStorages];
+                        const tmp = newBSS[key]
+                        newBSS[key] = newBSS[key-1];
+                        newBSS[key-1] = tmp;
+                        setNewBlockStorages(newBSS);
+                    }
+                    const onSwapDown = () => {
+                        if (key == newBlockStorages.length - 1) return;
+                        const newBSS = [...newBlockStorages];
+                        const tmp = newBSS[key]
+                        newBSS[key] = newBSS[key+1];
+                        newBSS[key+1] = tmp;
+                        setNewBlockStorages(newBSS);
                     }
                     return (
                     <Card key={key} className={classes.card}>
                         <CardContent>
-                            <TextField
-                                className={classes.input}
-                                label="Name"
-                                value={bs.getBlockStorageName()}
-                                onChange={onChangeBSName} />
+                            <div>
+                                <RadioGroup aria-label="storage" name="storage" value={bs.type} onChange={onChangeBSType}>
+                                    <FormControlLabel value="fromImage" control={<Radio />} label="Create From Image" />
+                                    <FormControlLabel value="empty" control={<Radio />} label="Create Empty Storage" />
+                                    <FormControlLabel value="existing" control={<Radio />} label="Use Existing Storage" />
+                                </RadioGroup>
+                            </div>
+                            {bs.type === SelectBlockStorageType.FromImage && (() => {
+                                const onChangeImageName = (e: React.ChangeEvent<HTMLSelectElement>) => {
+                                    const newBSS = [...newBlockStorages];
+                                    newBSS[key].imageName = e.target.value;
+                                    const imageTag = imageList.find((i) => i.getName() === e.target.value)?.getTagsMap().toArray()[0][0];
+                                    if (imageTag !== undefined) {
+                                        newBSS[key].imageTag = imageTag;
 
-                            <Typography variant="subtitle2">Image</Typography>
-                            <NativeSelect
-                                fullWidth
-                                >
-                                {['ubuntu', 'centos', 'debian'].map((i, key) => {
-                                    return (
-                                        <option key={key} value={key}>{i}</option>
-                                    )
-                                })}
-                            </NativeSelect>
+                                    }
+                                    setNewBlockStorages(newBSS);
+                                }
 
-                            <TextField
-                                className={classes.input}
-                                label="Request Size(GB)"
-                                value={bs.getRequestBytes() * 1024 * 1024 * 1024} />
+                                const onChangeBSRequestSize = (e: React.ChangeEvent<HTMLInputElement>) => {
+                                    const newBSS = [...newBlockStorages];
+                                    newBSS[key].requestBytes = parseInt(e.target.value) * 1024 * 1024 * 1024;
+                                    setNewBlockStorages(newBSS);
+                                }
 
-                            <TextField
-                                className={classes.input}
-                                label="Limit Size(GB)"
-                                value={bs.getLimitBytes() * 1024 * 1024 * 1024} />
+                                const onChangeBSLimitSize = (e: React.ChangeEvent<HTMLInputElement>) => {
+                                    const newBSS = [...newBlockStorages];
+                                    newBSS[key].limitBytes = parseInt(e.target.value) * 1024 * 1024 * 1024;
+                                    setNewBlockStorages(newBSS);
+                                }
+                                return (
+                                    <>
+                                        <TextField
+                                            className={classes.input}
+                                            label="Name"
+                                            value={bs.name}
+                                            onChange={onChangeBSName} />
+
+                                        <Typography variant="subtitle2">Image</Typography>
+                                        <NativeSelect
+                                            fullWidth
+                                            value={bs.imageName}
+                                            onChange={onChangeImageName}
+                                            >
+                                            {imageList.map((i, key) => {
+                                                return (
+                                                    <option key={key} value={i.getName()}>{i.getName()}</option>
+                                                )
+                                            })}
+                                        </NativeSelect>
+
+                                        <Typography variant="subtitle2">Tag</Typography>
+                                        <NativeSelect
+                                            fullWidth
+                                            value={bs.imageTag}
+                                            >
+                                                {console.log(imageList.filter((i) => i.getName() === bs.imageName))}
+                                                {imageList.find((i) => i.getName() === bs.imageName)?.getTagsMap().toArray().map((t, key) => {
+                                                    console.log(t);
+                                                    return (
+                                                        <option key={key} value={t[0]}>{t[0]}</option>
+                                                    )
+                                                })}
+                                            </NativeSelect>
+
+                                        <TextField
+                                            className={classes.input}
+                                            label="Request Size(GB)"
+                                            onChange={onChangeBSRequestSize}/>
+
+                                        <TextField
+                                            className={classes.input}
+                                            label="Limit Size(GB)"
+                                            onChange={onChangeBSLimitSize}/>
+
+                                    </>
+                                )
+                        })()}
                         </CardContent>
                         <CardActions>
+                            <ButtonGroup
+                                variant="contained"
+                                color="primary"
+                                aria-label="contained primary button group">
+                                    <Button
+                                        onClick={onSwapUp}>
+                                        ↑
+                                    </Button>
+                                    <Button
+                                        onClick={onSwapDown}>
+                                        ↓
+                                    </Button>
+                            </ButtonGroup>
                             <Button
                                 variant="outlined"
                                 color="secondary"
@@ -353,8 +560,8 @@ export function CreateVirtualMachine(_: CreateVirtualMachineProps) {
                     className={classes.createButton}
                     variant="outlined"
                     color="primary"
-                    onClick={onClickApplyNetwork}>
-                        apply
+                    onClick={onClickCreateVirtualMachine}>
+                        Create
                 </Button>
             </div>
         </Container>

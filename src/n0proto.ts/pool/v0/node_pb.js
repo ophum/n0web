@@ -13,11 +13,11 @@ var jspb = require('google-protobuf');
 var goog = jspb;
 var global = Function('return this')();
 
-var google_api_annotations_pb = require('./google/api/annotations_pb.js');
-var google_protobuf_empty_pb = require('google-protobuf/google/protobuf/empty_pb.js');
-var n0stack_budget_v0_compute_pb = require('./n0stack/budget/v0/compute_pb.js');
-var n0stack_budget_v0_storage_pb = require('./n0stack/budget/v0/storage_pb.js');
-var protoc$gen$swagger_options_annotations_pb = require('./protoc-gen-swagger/options/annotations_pb.js');
+//var google_api_annotations_pb = require('./google/api/annotations_pb.js');
+//var google_protobuf_empty_pb = require('google-protobuf/google/protobuf/empty_pb.js');
+var n0stack_budget_v0_compute_pb = require('../../budget/v0/compute_pb.js');
+var n0stack_budget_v0_storage_pb = require('../../budget/v0/storage_pb.js');
+//var protoc$gen$swagger_options_annotations_pb = require('./protoc-gen-swagger/options/annotations_pb.js');
 goog.exportSymbol('proto.n0stack.pool.v0.ApplyNodeRequest', null, global);
 goog.exportSymbol('proto.n0stack.pool.v0.DeleteNodeRequest', null, global);
 goog.exportSymbol('proto.n0stack.pool.v0.GetNodeRequest', null, global);

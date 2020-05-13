@@ -1,10 +1,10 @@
 import * as jspb from "google-protobuf"
 
-import * as google_api_annotations_pb from './google/api/annotations_pb';
+//import * as google_api_annotations_pb from './google/api/annotations_pb';
 import * as google_protobuf_empty_pb from 'google-protobuf/google/protobuf/empty_pb';
-import * as n0stack_budget_v0_compute_pb from './n0stack/budget/v0/compute_pb';
-import * as n0stack_budget_v0_storage_pb from './n0stack/budget/v0/storage_pb';
-import * as protoc$gen$swagger_options_annotations_pb from './protoc-gen-swagger/options/annotations_pb';
+import * as n0stack_budget_v0_compute_pb from '../../budget/v0/compute_pb';
+import * as n0stack_budget_v0_storage_pb from '../../budget/v0/storage_pb';
+// import * as protoc$gen$swagger_options_annotations_pb from './protoc-gen-swagger/options/annotations_pb';
 
 export class Node extends jspb.Message {
   getName(): string;
@@ -87,7 +87,7 @@ export namespace Node {
     reservedStoragesMap: Array<[string, n0stack_budget_v0_storage_pb.Storage.AsObject]>,
   }
 
-  export enum NodeState { 
+  export enum NodeState {
     NODE_UNSPECIFIED = 0,
     READY = 1,
     NOT_READY = 2,
@@ -421,4 +421,3 @@ export namespace ReleaseStorageRequest {
     storageName: string,
   }
 }
-
