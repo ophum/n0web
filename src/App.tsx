@@ -7,6 +7,7 @@ import {GetNetwork} from './pages/networks/GetNetwork';
 import {BlockStorageList} from './pages/blockstorages/BlockStorageList';
 import {VirtualMachineList} from './pages/virtualmachines/VirtualMachineList';
 import {CreateVirtualMachine} from './pages/virtualmachines/CreateVirtualMachine';
+import {GetVirtualMachine} from './pages/virtualmachines/GetVirtualMachine';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -89,6 +90,7 @@ const App = () => {
             <Route exact path="/blockstorages" children={<BlockStorageList />} />
             <Route exact path="/virtualmachines" children={<VirtualMachineList />} />
             <Route exact path="/virtualmachines/create" children={<CreateVirtualMachine />} />
+            <Route exact path="/virtualmachines/get/:name" children={<GetVirtualMachine />} />
             </Switch>
           </main>
       </div>

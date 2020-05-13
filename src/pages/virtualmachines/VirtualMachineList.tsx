@@ -10,6 +10,7 @@ import Paper from '@material-ui/core/Paper';
 
 import {ListVirtualMachinesRequest, VirtualMachine} from '../../n0proto.ts/provisioning/v0/virtual_machine_pb';
 import {VirtualMachineServiceClient} from '../../n0proto.ts/provisioning/v0/Virtual_machineServiceClientPb';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles({
   table: {
@@ -23,6 +24,7 @@ interface VirtualMachineListProps {
 
 export function VirtualMachineList(_: VirtualMachineListProps) {
     const classes = useStyles();
+    const history = useHistory();
     const [isReload, setIsReload] = useState(0);
     const [vmList, setVMList] = useState([] as VirtualMachine[])
     useEffect(() => reload(), [isReload])
@@ -54,7 +56,7 @@ export function VirtualMachineList(_: VirtualMachineListProps) {
                 </TableHead>
                 <TableBody>
                 {vmList.map((vm) => (
-                    <TableRow key={vm.getName()}>
+                    <TableRow key={vm.getName()} onClick={(() => history.push("/virtualmachines/get/" + vm.getName()))}>
                         <TableCell component="th" scope="row">
                             {vm.getName()}
                         </TableCell>
