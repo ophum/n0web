@@ -7,6 +7,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
 
 import {ListVirtualMachinesRequest, VirtualMachine} from '../../n0proto.ts/provisioning/v0/virtual_machine_pb';
 import {VirtualMachineServiceClient} from '../../n0proto.ts/provisioning/v0/Virtual_machineServiceClientPb';
@@ -45,27 +46,38 @@ export function VirtualMachineList(_: VirtualMachineListProps) {
     }
 
     return (
-        <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="simple table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Name</TableCell>
-                        <TableCell align="right">vcpus</TableCell>
-                        <TableCell align="right">memory</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                {vmList.map((vm) => (
-                    <TableRow key={vm.getName()} onClick={(() => history.push("/virtualmachines/get/" + vm.getName()))}>
-                        <TableCell component="th" scope="row">
-                            {vm.getName()}
-                        </TableCell>
-                        <TableCell align="right">{vm.getLimitCpuMilliCore() / 1000}</TableCell>
-                        <TableCell align="right">{vm.getLimitMemoryBytes() / 1024 / 1024}MB</TableCell>
-                    </TableRow>
-                ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+        <>
+            <Button
+                variant="outlined"
+                color="primary"
+                onClick={(() => {
+                    history.push("/virtualmachines/create");
+                })}>
+                    New
+            </Button>
+            <TableContainer component={Paper}>
+
+                <Table className={classes.table} aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Name</TableCell>
+                            <TableCell align="right">vcpus</TableCell>
+                            <TableCell align="right">memory</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                    {vmList.map((vm) => (
+                        <TableRow key={vm.getName()} onClick={(() => history.push("/virtualmachines/get/" + vm.getName()))}>
+                            <TableCell component="th" scope="row">
+                                {vm.getName()}
+                            </TableCell>
+                            <TableCell align="right">{vm.getLimitCpuMilliCore() / 1000}</TableCell>
+                            <TableCell align="right">{vm.getLimitMemoryBytes() / 1024 / 1024}MB</TableCell>
+                        </TableRow>
+                    ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </>
     )
 }
