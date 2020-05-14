@@ -9,6 +9,8 @@ import {GetBlockStorage} from './pages/blockstorages/GetBlockStorage';
 import {VirtualMachineList} from './pages/virtualmachines/VirtualMachineList';
 import {CreateVirtualMachine} from './pages/virtualmachines/CreateVirtualMachine';
 import {GetVirtualMachine} from './pages/virtualmachines/GetVirtualMachine';
+import { ImageList } from './pages/images/ImageList';
+
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -71,7 +73,7 @@ const App = () => {
             <Toolbar />
             <div className={classes.drawerContainer}>
               <List>
-                {['/', '/networks', '/blockstorages', '/virtualmachines'].map((text, index) => (
+                {['/', '/networks', '/blockstorages', '/virtualmachines', '/images'].map((text, index) => (
                   <Link to={text} className={classes.sideMenuLink}>
                     <ListItem button key={index}>
                       <ListItemText primary={text} />
@@ -93,6 +95,7 @@ const App = () => {
             <Route exact path="/virtualmachines" children={<VirtualMachineList />} />
             <Route exact path="/virtualmachines/create" children={<CreateVirtualMachine />} />
             <Route exact path="/virtualmachines/get/:name" children={<GetVirtualMachine />} />
+            <Route exact path="/images" children={<ImageList />} />
             </Switch>
           </main>
       </div>
