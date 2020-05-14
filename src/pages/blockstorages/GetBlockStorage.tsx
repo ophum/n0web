@@ -2,10 +2,12 @@
 import React, {useState, useEffect} from 'react';
 import {useHistory, useParams} from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import Paper, { PaperProps } from '@material-ui/core/Paper';
+import Draggable from 'react-draggable';
+import { DeleteConfirmDialog } from '../../components/DeleteConfirmDialog';
 
 import {DeleteVirtualMachineRequest, GetVirtualMachineRequest, VirtualMachine} from '../../n0proto.ts/provisioning/v0/virtual_machine_pb';
 import {VirtualMachineServiceClient} from '../../n0proto.ts/provisioning/v0/Virtual_machineServiceClientPb';
@@ -53,8 +55,16 @@ export function GetBlockStorage(_: GetBlockStorageProps) {
 
     useEffect(() => reload(), []);
 
+    const [isShowDeleteDialog, setIsShowDeleteDialog] = useState(false);
+    const onCloseDeleteDialog = () => {
+        setIsShowDeleteDialog(false);
+    }
 
     const onClickDeleteButton = () => {
+        setIsShowDeleteDialog(true);
+    }
+
+    const onDelete = () => {
         const deleteRequest = new DeleteBlockStorageRequest()
         deleteRequest.setName(bs.getName());
         const client = new BlockStorageServiceClient("http://localhost:8080", {});
@@ -77,6 +87,7 @@ export function GetBlockStorage(_: GetBlockStorageProps) {
     }
 
     return (
+        <>
         <Container>
             <Typography
                 variant="h5">
@@ -109,15 +120,24 @@ export function GetBlockStorage(_: GetBlockStorageProps) {
                         {bs.getLimitBytes() / 1024 / 1024 / 1024}
                     </Typography>
 
-                    <Button
-                        className={classes.deleteButton}
-                        variant="outlined"
-                        color="secondary"
-                        onClick={onClickDeleteButton}>
-                            Delete
-                    </Button>
+                    {bs.getState() === BlockStorage.BlockStorageState.AVAILABLE && (
+                        <Button
+                            className={classes.deleteButton}
+                            variant="outlined"
+                            color="secondary"
+                            onClick={onClickDeleteButton}>
+                                Delete
+                        </Button>
+                    )}
                 </CardContent>
             </Card>
         </Container>
+        <DeleteConfirmDialog
+            isShow={isShowDeleteDialog}
+            deleteResourceType="blockstorage"
+            deleteResourceName={bs.getName()}
+            onClose={onCloseDeleteDialog}
+            onDelete={onDelete} />
+       </>
     )
 }

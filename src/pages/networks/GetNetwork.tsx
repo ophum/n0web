@@ -7,6 +7,8 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 
+import { DeleteConfirmDialog } from '../../components/DeleteConfirmDialog';
+
 import {DeleteNetworkRequest, GetNetworkRequest, Network} from '../../n0proto.ts/pool/v0/network_pb';
 import {NetworkServiceClient} from '../../n0proto.ts/pool/v0/NetworkServiceClientPb';
 import { Card, CardContent } from '@material-ui/core';
@@ -48,7 +50,15 @@ export function GetNetwork(_: GetNetworkProps) {
     }
     useEffect(() => reload(), []);
 
+    const [isShowDeleteDialog, setIsShowDeleteDialog] = useState(false);
+    const onCloseDeleteDialog = () => {
+        setIsShowDeleteDialog(false);
+    }
     const onClickDeleteButton = () => {
+        setIsShowDeleteDialog(true);
+    }
+
+    const onDelete = () => {
         const request = new DeleteNetworkRequest()
         request.setName(network.getName());
         const client = new NetworkServiceClient("http://localhost:8080", {});
@@ -63,6 +73,7 @@ export function GetNetwork(_: GetNetworkProps) {
     }
 
     return (
+        <>
         <Container>
             <Typography
                 variant="h5">
@@ -92,5 +103,12 @@ export function GetNetwork(_: GetNetworkProps) {
                 </CardContent>
             </Card>
         </Container>
+        <DeleteConfirmDialog
+            isShow={isShowDeleteDialog}
+            deleteResourceType="network"
+            deleteResourceName={network.getName()}
+            onClose={onCloseDeleteDialog}
+            onDelete={onDelete} />
+        </>
     )
 }

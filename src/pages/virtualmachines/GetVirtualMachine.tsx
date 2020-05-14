@@ -8,11 +8,10 @@ import Link from '@material-ui/core/Link';
 import Chip from '@material-ui/core/Chip';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-
 import {DeleteVirtualMachineRequest, GetVirtualMachineRequest, VirtualMachine} from '../../n0proto.ts/provisioning/v0/virtual_machine_pb';
 import {VirtualMachineServiceClient} from '../../n0proto.ts/provisioning/v0/Virtual_machineServiceClientPb';
 import { Card, CardContent } from '@material-ui/core';
-
+import { DeleteConfirmDialog } from '../../components/DeleteConfirmDialog';
 import {Config} from '../../config/config';
 
 
@@ -53,7 +52,16 @@ export function GetVirtualMachine(_: GetVirtualMachineProps) {
     }
     useEffect(() => reload(), []);
 
+    const [isShowDeleteDialog, setIsShowDeleteDialog] = useState(false);
+    const onCloseDeleteDialog = () => {
+        setIsShowDeleteDialog(false);
+    }
+
     const onClickDeleteButton = () => {
+        setIsShowDeleteDialog(true);
+    }
+
+    const onDelete = () => {
         const request = new DeleteVirtualMachineRequest()
         request.setName(vm.getName());
         const client = new VirtualMachineServiceClient("http://localhost:8080", {});
@@ -68,6 +76,7 @@ export function GetVirtualMachine(_: GetVirtualMachineProps) {
     }
 
     return (
+        <>
         <Container>
             <Typography
                 variant="h5">
@@ -117,6 +126,14 @@ export function GetVirtualMachine(_: GetVirtualMachineProps) {
                 </CardContent>
             </Card>
         </Container>
+        <DeleteConfirmDialog
+            isShow={isShowDeleteDialog}
+            deleteResourceType="virtualmachine"
+            deleteResourceName={vm.getName()}
+            onClose={onCloseDeleteDialog}
+            onDelete={onDelete} />
+
+        </>
     )
 }
 
