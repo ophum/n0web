@@ -10,6 +10,7 @@ import Paper from '@material-ui/core/Paper'
 
 import {ListBlockStoragesRequest, BlockStorage} from '../../n0proto.ts/provisioning/v0/block_storage_pb';
 import {BlockStorageServiceClient} from '../../n0proto.ts/provisioning/v0/Block_storageServiceClientPb';
+import { useHistory } from 'react-router-dom';
 
 
 
@@ -25,6 +26,7 @@ interface BlockStorageListProps {
 
 export function BlockStorageList(_: BlockStorageListProps) {
     const classes = useStyles();
+    const history = useHistory();
     const [isReload, setIsReload] = useState(0);
     const [bsList, setBSList] = useState([] as BlockStorage[])
     useEffect(() => reload(), [isReload])
@@ -54,11 +56,11 @@ export function BlockStorageList(_: BlockStorageListProps) {
                 </TableHead>
                 <TableBody>
                 {bsList.map((bs) => (
-                    <TableRow key={bs.getName()}>
+                    <TableRow key={bs.getName()} onClick={(() => history.push(`/blockstorages/get/${bs.getName()}`))}>
                         <TableCell component="th" scope="row">
                             {bs.getName()}
                         </TableCell>
-                            <TableCell align="right">{bs.getState()}</TableCell>
+                            <TableCell align="right">{getStateString(bs.getState())}</TableCell>
                             <TableCell align="right">{bs.getLimitBytes() / 1024 / 1024 / 1024}GB</TableCell>
                     </TableRow>
                 ))}
@@ -66,4 +68,23 @@ export function BlockStorageList(_: BlockStorageListProps) {
             </Table>
         </TableContainer>
     )
+}
+
+function getStateString(state: BlockStorage.BlockStorageState): string {
+    const s = BlockStorage.BlockStorageState;
+    switch(state){
+    case s.AVAILABLE:
+        return "AVAILABLE";
+    case s.BLOCK_STORAGE_UNSPECIFIED:
+        return "BLOCK_STORAGE_UNSPECIFIED";
+    case s.DELETED:
+        return "DELETED";
+    case s.IN_USE:
+        return "IN_USE";
+    case s.PENDING:
+        return "PENDING";
+    case s.PROTECTED:
+        return "PROTECTED";
+    }
+    return "UNKNOWN";
 }

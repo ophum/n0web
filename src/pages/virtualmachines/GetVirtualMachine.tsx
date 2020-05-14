@@ -4,6 +4,8 @@ import {useHistory, useParams} from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Link from '@material-ui/core/Link';
+import Chip from '@material-ui/core/Chip';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 
@@ -11,13 +13,14 @@ import {DeleteVirtualMachineRequest, GetVirtualMachineRequest, VirtualMachine} f
 import {VirtualMachineServiceClient} from '../../n0proto.ts/provisioning/v0/Virtual_machineServiceClientPb';
 import { Card, CardContent } from '@material-ui/core';
 
+import {Config} from '../../config/config';
 
 
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
   },
-  deleteButton: {
+  basicButton: {
       marginTop: '10px',
   },
 });
@@ -31,6 +34,7 @@ export function GetVirtualMachine(_: GetVirtualMachineProps) {
     const history = useHistory();
     const {name} = useParams();
 
+    const [loc, setLoc] = useState("");
     const [vm, setVM] = useState(new VirtualMachine());
 
     const reload = () => {
@@ -44,6 +48,7 @@ export function GetVirtualMachine(_: GetVirtualMachineProps) {
             }
 
             setVM(res);
+            setLoc(`http://${Config.VMConsoleFQDN}/n0core/static/virtual_machines/vnc.html?path=n0core/api/v0/virtual_machines/${name}/vncwebsocket`)
         })
     }
     useEffect(() => reload(), []);
@@ -65,8 +70,8 @@ export function GetVirtualMachine(_: GetVirtualMachineProps) {
     return (
         <Container>
             <Typography
-                variant="h4">
-                    Get Network
+                variant="h5">
+                    Get VirtualMachine
             </Typography>
             <Card>
                 <CardContent>
@@ -75,6 +80,12 @@ export function GetVirtualMachine(_: GetVirtualMachineProps) {
                     </Typography>
                     <Typography variant="body1">
                         {vm.getName()}
+                    </Typography>
+                    <Typography variant="h6">
+                        State
+                    </Typography>
+                    <Typography variant="body1">
+                        <StateChip state={vm.getState()} />
                     </Typography>
                     <Typography variant="h6">
                         vcpus
@@ -88,8 +99,16 @@ export function GetVirtualMachine(_: GetVirtualMachineProps) {
                     <Typography variant="body1">
                         {vm.getLimitMemoryBytes() / 1024 / 1024}
                     </Typography>
+                    <Link href={loc} target="_blank" rel="noreferrer noopener">
+                        <Button
+                        className={classes.basicButton}
+                        variant="contained"
+                        color="primary">
+                            Open Console
+                        </Button>
+                    </Link>
                     <Button
-                        className={classes.deleteButton}
+                        className={classes.basicButton}
                         variant="outlined"
                         color="secondary"
                         onClick={onClickDeleteButton}>
@@ -99,4 +118,39 @@ export function GetVirtualMachine(_: GetVirtualMachineProps) {
             </Card>
         </Container>
     )
+}
+
+interface StateChipProps {
+    state: VirtualMachine.VirtualMachineState;
+}
+
+function StateChip(props: StateChipProps) {
+    const s = VirtualMachine.VirtualMachineState;
+    return (
+        <Chip
+            label={getStateString(props.state)}
+            variant="outlined"
+            color={(() => {
+                if (props.state === s.RUNNING) {
+                    return "primary";
+                }
+                return "default";
+            })()}/>
+    )
+}
+function getStateString(state: VirtualMachine.VirtualMachineState): string {
+    const s = VirtualMachine.VirtualMachineState;
+    switch(state){
+    case s.PAUSED:
+        return "PAUSED";
+    case s.PENDING:
+        return "PENDING";
+    case s.RUNNING:
+        return "RUNNING";
+    case s.SHUTDOWN:
+        return "SHUTDOWN";
+    case s.VIRTUAL_MACHINE_UNSPECIFIED:
+        return "VIRTUAL_MACHINE_UNSPECIFIED";
+    }
+    return "UNKNOWN";
 }

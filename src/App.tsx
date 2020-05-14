@@ -5,6 +5,7 @@ import {NetworkList} from './pages/networks/NetworkList';
 import {ApplyNetwork} from './pages/networks/ApplyNetwork';
 import {GetNetwork} from './pages/networks/GetNetwork';
 import {BlockStorageList} from './pages/blockstorages/BlockStorageList';
+import {GetBlockStorage} from './pages/blockstorages/GetBlockStorage';
 import {VirtualMachineList} from './pages/virtualmachines/VirtualMachineList';
 import {CreateVirtualMachine} from './pages/virtualmachines/CreateVirtualMachine';
 import {GetVirtualMachine} from './pages/virtualmachines/GetVirtualMachine';
@@ -88,6 +89,7 @@ const App = () => {
             <Route exact path="/networks/apply" children={<ApplyNetwork />} />
             <Route exact path="/networks/get/:name" children={<GetNetwork />} />
             <Route exact path="/blockstorages" children={<BlockStorageList />} />
+            <Route exact path="/blockstorages/get/:name" children={<GetBlockStorage />} />
             <Route exact path="/virtualmachines" children={<VirtualMachineList />} />
             <Route exact path="/virtualmachines/create" children={<CreateVirtualMachine />} />
             <Route exact path="/virtualmachines/get/:name" children={<GetVirtualMachine />} />

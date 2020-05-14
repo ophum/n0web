@@ -65,7 +65,7 @@ export function GetNetwork(_: GetNetworkProps) {
     return (
         <Container>
             <Typography
-                variant="h4">
+                variant="h5">
                     Get Network
             </Typography>
             <Card>
