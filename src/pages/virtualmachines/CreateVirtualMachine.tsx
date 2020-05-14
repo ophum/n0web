@@ -212,6 +212,18 @@ export function CreateVirtualMachine(_: CreateVirtualMachineProps) {
         ])
     }
 
+    const onChangeUserName = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newVM = vm.clone();
+        newVM.setLoginUsername(e.target.value);
+        setVM(newVM);
+    }
+
+    const onChangeSSHPublickKey = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newVM = vm.clone();
+        newVM.setSshAuthorizedKeysList([e.target.value]);
+        setVM(newVM);
+    }
+
     const onClickCreateVirtualMachine = () => {
         console.log(vm);
         console.log(newBlockStorages);
@@ -247,6 +259,8 @@ export function CreateVirtualMachine(_: CreateVirtualMachineProps) {
         request.setLimitMemoryBytes(vm.getLimitMemoryBytes());
         request.setNicsList(vm.getNicsList());
         request.setBlockStorageNamesList(vm.getBlockStorageNamesList());
+        request.setLoginUsername(vm.getLoginUsername());
+        request.setSshAuthorizedKeysList(vm.getSshAuthorizedKeysList());
         request.getAnnotationsMap().set("n0core/provisioning/virtual_machine/request_node_name", selectedNodeName);
 
         const client = new VirtualMachineServiceClient("http://localhost:8080", {});
@@ -303,6 +317,14 @@ export function CreateVirtualMachine(_: CreateVirtualMachineProps) {
                     label="memory(GB)"
                     onChange={onChangeNewVMMemory}
                 />
+            </div>
+            <div>
+                <TextField
+                    label="user"
+                    onChange={onChangeUserName} />
+                <TextField
+                    label="SSH Public Key"
+                    onChange={onChangeSSHPublickKey} />
             </div>
             <div>
                 <Typography variant="h6" className={classes.title}>
