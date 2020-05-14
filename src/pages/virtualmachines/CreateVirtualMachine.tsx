@@ -326,6 +326,13 @@ export function CreateVirtualMachine(_: CreateVirtualMachineProps) {
                         Attach
                 </Button>
                 {vm.getNicsList() !== null && vm.getNicsList().map((nic, key) => {
+                    const onChangeIPv4Address = (e: React.ChangeEvent<HTMLInputElement>) => {
+                        const newVM = vm.clone();
+                        const newNicsList = newVM.getNicsList();
+                        newNicsList[key].setIpv4Address(e.target.value);
+                        newVM.setNicsList(newNicsList);
+                        setVM(newVM);
+                    }
                     const onSwapUp = () => {
                         if(key <= 0) return;
                         const newVM = vm.clone();
@@ -361,7 +368,8 @@ export function CreateVirtualMachine(_: CreateVirtualMachineProps) {
                             </Typography>
                             <TextField
                                 label="IPv4 Address"
-                                placeholder="xxx.xxx.xxx.xxx"/>
+                                placeholder="xxx.xxx.xxx.xxx"
+                                onChange={onChangeIPv4Address}/>
                         </CardContent>
                         <CardActions>
                             <ButtonGroup
