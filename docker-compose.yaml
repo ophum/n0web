@@ -1,0 +1,12 @@
+version: '2'
+services:
+  proxy:
+    build: ./proxy
+    image: proxy-image
+    container_name: proxy
+    ports:
+      - 8888:8080
+  n0web:
+    build: .
+    ports:
+      - 3000:3000

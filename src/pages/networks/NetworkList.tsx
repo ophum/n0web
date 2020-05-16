@@ -14,6 +14,7 @@ import Button from '@material-ui/core/Button';
 import {ListNetworksRequest, Network} from '../../n0proto.ts/pool/v0/network_pb';
 import {NetworkServiceClient} from '../../n0proto.ts/pool/v0/NetworkServiceClientPb';
 import { useHistory } from 'react-router-dom';
+import {Config} from '../../config/config';
 
 
 
@@ -35,7 +36,7 @@ export function NetworkList(_: NetworkListProps) {
     useEffect(() => reload(), [isReload])
     const reload = () => {
         const request = new ListNetworksRequest();
-        const client = new NetworkServiceClient("http://localhost:8080", {});
+        const client = new NetworkServiceClient(Config.ProxyURL, {});
         client.listNetworks(request, {}, (err, res) => {
             if(err || res === null) {
                 throw err;

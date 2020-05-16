@@ -12,6 +12,7 @@ import { DeleteConfirmDialog } from '../../components/DeleteConfirmDialog';
 import {DeleteNetworkRequest, GetNetworkRequest, Network} from '../../n0proto.ts/pool/v0/network_pb';
 import {NetworkServiceClient} from '../../n0proto.ts/pool/v0/NetworkServiceClientPb';
 import { Card, CardContent } from '@material-ui/core';
+import { Config } from '../../config/config';
 
 
 
@@ -38,7 +39,7 @@ export function GetNetwork(_: GetNetworkProps) {
     const reload = () => {
         const request = new GetNetworkRequest();
         request.setName(name);
-        const client = new NetworkServiceClient("http://localhost:8080", {});
+        const client = new NetworkServiceClient(Config.ProxyURL, {});
         client.getNetwork(request, null, (err, res) => {
             if (err || res === null) {
                 console.log(err);
@@ -61,7 +62,7 @@ export function GetNetwork(_: GetNetworkProps) {
     const onDelete = () => {
         const request = new DeleteNetworkRequest()
         request.setName(network.getName());
-        const client = new NetworkServiceClient("http://localhost:8080", {});
+        const client = new NetworkServiceClient(Config.ProxyURL, {});
         client.deleteNetwork(request, null, (err, res) => {
             if (err || res === null) {
                 console.log(err);

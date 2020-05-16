@@ -11,6 +11,7 @@ import Paper from '@material-ui/core/Paper'
 import {ListBlockStoragesRequest, BlockStorage} from '../../n0proto.ts/provisioning/v0/block_storage_pb';
 import {BlockStorageServiceClient} from '../../n0proto.ts/provisioning/v0/Block_storageServiceClientPb';
 import { useHistory } from 'react-router-dom';
+import { Config } from '../../config/config';
 
 
 
@@ -32,7 +33,7 @@ export function BlockStorageList(_: BlockStorageListProps) {
     useEffect(() => reload(), [isReload])
     const reload = () => {
         const request = new ListBlockStoragesRequest();
-        const client = new BlockStorageServiceClient("http://localhost:8080", {});
+        const client = new BlockStorageServiceClient(Config.ProxyURL, {});
         client.listBlockStorages(request, {}, (err, res) => {
             if(err || res === null) {
                 throw err;

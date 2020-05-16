@@ -14,6 +14,7 @@ import Button from '@material-ui/core/Button';
 import { useHistory } from 'react-router-dom';
 import { Image, ListImagesRequest } from '../../n0proto.ts/deployment/v0/image_pb';
 import { ImageServiceClient } from '../../n0proto.ts/deployment/v0/ImageServiceClientPb';
+import { Config } from '../../config/config';
 
 
 
@@ -35,7 +36,7 @@ export function ImageList(_: ImageListProps) {
     useEffect(() => reload(), [isReload])
     const reload = () => {
         const request = new ListImagesRequest();
-        const client = new ImageServiceClient("http://localhost:8080", {});
+        const client = new ImageServiceClient(Config.ProxyURL, {});
         client.listImages(request, {}, (err, res) => {
             if(err || res === null) {
                 throw err;

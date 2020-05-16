@@ -23,6 +23,7 @@ import {CreateVirtualMachineRequest, VirtualMachine, VirtualMachineNIC} from '..
 import {VirtualMachineServiceClient} from '../../n0proto.ts/provisioning/v0/Virtual_machineServiceClientPb';
 import { NativeSelect, Grid, Card, CardContent, CardActions, ButtonGroup } from '@material-ui/core';
 import { BlockStorageServiceClient } from '../../n0proto.ts/provisioning/v0/Block_storageServiceClientPb';
+import { Config } from '../../config/config';
 
 
 
@@ -79,7 +80,7 @@ export function CreateVirtualMachine(_: CreateVirtualMachineProps) {
     const [networkList, setNetworkList] = useState([] as Network[])
     useEffect(() => {
         const request = new ListNetworksRequest;
-        const client = new NetworkServiceClient("http://localhost:8080", {});
+        const client = new NetworkServiceClient(Config.ProxyURL, {});
         client.listNetworks(request, null, (err, res) => {
             if (err || res === null) {
                 console.log(err);
@@ -101,7 +102,7 @@ export function CreateVirtualMachine(_: CreateVirtualMachineProps) {
     const [blockStorageList, setBlockStorageList] = useState([] as BlockStorage[]);
     useEffect(() => {
         const request = new ListBlockStoragesRequest;
-        const client = new BlockStorageServiceClient("http://localhost:8080", {});
+        const client = new BlockStorageServiceClient(Config.ProxyURL, {});
         client.listBlockStorages(request, null, (err, res) => {
             if (err || res === null) {
                 console.log(err);
@@ -123,7 +124,7 @@ export function CreateVirtualMachine(_: CreateVirtualMachineProps) {
     const [imageList, setImageList] = useState([] as Image[]);
     useEffect(() => {
         const request  = new ListImagesRequest;
-        const client = new ImageServiceClient("http://localhost:8080", {});
+        const client = new ImageServiceClient(Config.ProxyURL, {});
         client.listImages(request, null, (err, res) => {
             if (err || res === null) {
                 console.log(err)
@@ -136,7 +137,7 @@ export function CreateVirtualMachine(_: CreateVirtualMachineProps) {
     const [nodeList, setNodeList] = useState([] as Node[]);
     useEffect(() => {
         const request = new ListNodesRequest();
-        const client = new NodeServiceClient("http://localhost:8080", {});
+        const client = new NodeServiceClient(Config.ProxyURL, {});
         client.listNodes(request, null, (err, res) => {
             if (err || res === null) {
                 console.log(err)
@@ -243,7 +244,7 @@ export function CreateVirtualMachine(_: CreateVirtualMachineProps) {
                 generateBlockStorageRequest.setLimitBytes(s.limitBytes);
                 generateBlockStorageRequest.getAnnotationsMap().set("n0core/provisioning/block_storage/request_node_name", selectedNodeName);
                 console.log(generateBlockStorageRequest.getAnnotationsMap());
-                const client = new ImageServiceClient("http://localhost:8080", {});
+                const client = new ImageServiceClient(Config.ProxyURL, {});
                 client.generateBlockStorage(generateBlockStorageRequest, null, (err, res) => {
                     console.log(err);
                     throw err;
@@ -263,7 +264,7 @@ export function CreateVirtualMachine(_: CreateVirtualMachineProps) {
         request.setSshAuthorizedKeysList(vm.getSshAuthorizedKeysList());
         request.getAnnotationsMap().set("n0core/provisioning/virtual_machine/request_node_name", selectedNodeName);
 
-        const client = new VirtualMachineServiceClient("http://localhost:8080", {});
+        const client = new VirtualMachineServiceClient(Config.ProxyURL, {});
         client.createVirtualMachine(request, null, (err, res) => {
             if (err || res === null) {
                 console.log(err);

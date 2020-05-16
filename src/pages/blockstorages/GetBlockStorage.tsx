@@ -42,7 +42,7 @@ export function GetBlockStorage(_: GetBlockStorageProps) {
     const reload = () => {
         const request = new GetBlockStorageRequest();
         request.setName(name);
-        const client = new BlockStorageServiceClient("http://localhost:8080", {});
+        const client = new BlockStorageServiceClient(Config.ProxyURL, {});
         client.getBlockStorage(request, null, (err, res) => {
             if (err || res === null) {
                 console.log(err);
@@ -67,7 +67,7 @@ export function GetBlockStorage(_: GetBlockStorageProps) {
     const onDelete = () => {
         const deleteRequest = new DeleteBlockStorageRequest()
         deleteRequest.setName(bs.getName());
-        const client = new BlockStorageServiceClient("http://localhost:8080", {});
+        const client = new BlockStorageServiceClient(Config.ProxyURL, {});
         client.deleteBlockStorage(deleteRequest, null, (err, res) => {
             if (err || res === null) {
                 console.log(err);

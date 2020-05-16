@@ -12,6 +12,7 @@ import Button from '@material-ui/core/Button';
 import {ListVirtualMachinesRequest, VirtualMachine} from '../../n0proto.ts/provisioning/v0/virtual_machine_pb';
 import {VirtualMachineServiceClient} from '../../n0proto.ts/provisioning/v0/Virtual_machineServiceClientPb';
 import { useHistory } from 'react-router-dom';
+import { Config } from '../../config/config';
 
 const useStyles = makeStyles({
   table: {
@@ -31,7 +32,7 @@ export function VirtualMachineList(_: VirtualMachineListProps) {
     useEffect(() => reload(), [isReload])
     const reload = () => {
         const request = new ListVirtualMachinesRequest();
-        const client = new VirtualMachineServiceClient("http://localhost:8080", {});
+        const client = new VirtualMachineServiceClient(Config.ProxyURL, {});
         client.listVirtualMachines(request, {}, (err, res) => {
             if(err || res === null) {
                 throw err;

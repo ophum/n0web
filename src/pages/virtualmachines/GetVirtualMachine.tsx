@@ -39,7 +39,7 @@ export function GetVirtualMachine(_: GetVirtualMachineProps) {
     const reload = () => {
         const request = new GetVirtualMachineRequest();
         request.setName(name);
-        const client = new VirtualMachineServiceClient("http://localhost:8080", {});
+        const client = new VirtualMachineServiceClient(Config.ProxyURL, {});
         client.getVirtualMachine(request, null, (err, res) => {
             if (err || res === null) {
                 console.log(err);
@@ -64,7 +64,7 @@ export function GetVirtualMachine(_: GetVirtualMachineProps) {
     const onDelete = () => {
         const request = new DeleteVirtualMachineRequest()
         request.setName(vm.getName());
-        const client = new VirtualMachineServiceClient("http://localhost:8080", {});
+        const client = new VirtualMachineServiceClient(Config.ProxyURL, {});
         client.deleteVirtualMachine(request, null, (err, res) => {
             if (err || res === null) {
                 console.log(err);

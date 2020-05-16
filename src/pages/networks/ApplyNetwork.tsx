@@ -8,6 +8,7 @@ import Container from '@material-ui/core/Container';
 
 import {ApplyNetworkRequest, Network} from '../../n0proto.ts/pool/v0/network_pb';
 import {NetworkServiceClient} from '../../n0proto.ts/pool/v0/NetworkServiceClientPb';
+import { Config } from '../../config/config';
 
 
 
@@ -44,7 +45,7 @@ export function ApplyNetwork(_: ApplyNetworkProps) {
         request.setIpv4Cidr(newNetworkIpv4Cidr);
         request.getAnnotationsMap().set('n0core/provisioning/virtual_machine/vlan_id', "0");
         console.log(request.toArray());
-        const client = new NetworkServiceClient("http://localhost:8080", {});
+        const client = new NetworkServiceClient(Config.ProxyURL, {});
         client.applyNetwork(request, null, (err, res) => {
             if (err || res === null) {
                 console.log(err);
