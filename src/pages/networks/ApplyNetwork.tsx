@@ -1,30 +1,25 @@
-import React, {useState, useEffect} from 'react';
-import {useHistory} from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
-
-import {ApplyNetworkRequest, Network} from '../../n0proto.ts/pool/v0/network_pb';
-import {NetworkServiceClient} from '../../n0proto.ts/pool/v0/NetworkServiceClientPb';
-import { Config } from '../../config/config';
-
-
+import Button from "@material-ui/core/Button";
+import Container from "@material-ui/core/Container";
+import { makeStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
+import { Config } from "../../config/config";
+import { NetworkServiceClient } from "../../n0proto.ts/pool/v0/NetworkServiceClientPb";
+import { ApplyNetworkRequest } from "../../n0proto.ts/pool/v0/network_pb";
 
 const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
-  createButton: {
-      width: '400px',
-      marginTop: '10px',
-  },
+    table: {
+        minWidth: 650,
+    },
+    createButton: {
+        width: "400px",
+        marginTop: "10px",
+    },
 });
 
-interface ApplyNetworkProps{
-
-}
+interface ApplyNetworkProps {}
 
 export function ApplyNetwork(_: ApplyNetworkProps) {
     const classes = useStyles();
@@ -35,15 +30,19 @@ export function ApplyNetwork(_: ApplyNetworkProps) {
 
     const onChangeNewNetworkName = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNewNetworkName(e.target.value);
-    }
-    const onChangeNewNetworkIpv4Cidr = (e: React.ChangeEvent<HTMLInputElement>) => {
+    };
+    const onChangeNewNetworkIpv4Cidr = (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
         setNewNetworkIpv4Cidr(e.target.value);
-    }
+    };
     const onClickApplyNetwork = () => {
         const request = new ApplyNetworkRequest();
         request.setName(newNetworkName);
         request.setIpv4Cidr(newNetworkIpv4Cidr);
-        request.getAnnotationsMap().set('n0core/provisioning/virtual_machine/vlan_id', "0");
+        request
+            .getAnnotationsMap()
+            .set("n0core/provisioning/virtual_machine/vlan_id", "0");
         console.log(request.toArray());
         const client = new NetworkServiceClient(Config.ProxyURL, {});
         client.applyNetwork(request, null, (err, res) => {
@@ -53,19 +52,13 @@ export function ApplyNetwork(_: ApplyNetworkProps) {
             }
 
             history.push("/networks");
-        })
-    }
+        });
+    };
     return (
         <Container>
-            <Typography
-                variant="h4">
-                    Apply Network
-            </Typography>
+            <Typography variant="h4">Apply Network</Typography>
             <div>
-                <TextField
-                    label="Name"
-                    onChange={onChangeNewNetworkName}
-                />
+                <TextField label="Name" onChange={onChangeNewNetworkName} />
             </div>
             <div>
                 <TextField
@@ -78,10 +71,11 @@ export function ApplyNetwork(_: ApplyNetworkProps) {
                     className={classes.createButton}
                     variant="outlined"
                     color="primary"
-                    onClick={onClickApplyNetwork}>
-                        apply
+                    onClick={onClickApplyNetwork}
+                >
+                    apply
                 </Button>
             </div>
         </Container>
-    )
+    );
 }

@@ -1,10 +1,6 @@
-import * as React from 'react';
+import * as React from "react";
 
-export interface HomeProps {
-
-}
+export interface HomeProps {}
 export function Home(_: HomeProps) {
-    return (
-        <></>
-    )
+    return <></>;
 }
